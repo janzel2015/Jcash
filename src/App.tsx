@@ -289,7 +289,7 @@ export default function App() {
   // Authentication Screen Guard
   if (!currentUser) {
     return (
-      <div className="bg-slate-900 min-h-screen flex items-center justify-center p-4">
+      <div className="bg-sky-50 min-h-screen flex items-center justify-center p-4">
         <Auth onSuccess={(user) => {
           setCurrentUser(user);
           selectTab('home');
@@ -299,11 +299,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-sky-500 to-indigo-600 text-slate-100 flex flex-col items-center justify-center py-6 px-4 md:px-8 relative overflow-hidden selection:bg-cyan-500 selection:text-slate-950 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-sky-100 via-sky-200 to-sky-300 text-slate-800 flex flex-col items-center justify-center py-6 px-4 md:px-8 relative overflow-hidden selection:bg-sky-200 selection:text-slate-900 font-sans">
       {/* Background neon blurs */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/15 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/15 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-sky-300/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-300/20 rounded-full blur-[140px] pointer-events-none" />
       </div>
 
       {/* Main Container Wrapper */}
@@ -313,16 +313,16 @@ export default function App() {
         <div className="hidden lg:flex flex-col justify-between w-[240px] xl:w-[280px] shrink-0 text-left py-4 space-y-6 select-none font-sans">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+              <div className="w-10 h-10 bg-gradient-to-tr from-sky-500 to-blue-650 rounded-xl flex items-center justify-center shadow-md shadow-sky-400/20">
                 <span className="font-extrabold text-white text-xl">J</span>
               </div>
-              <h1 className="text-3xl font-black tracking-tight text-white font-display">
-                Jcash<span className="text-cyan-400">.</span>
+              <h1 className="text-3xl font-black tracking-tight text-slate-800 font-display">
+                Jcash<span className="text-sky-600">.</span>
               </h1>
             </div>
             
-            <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-              <p className="text-xs text-slate-300 leading-relaxed">
+            <div className="p-3.5 rounded-2xl bg-white/80 border border-sky-100/75 shadow-xs backdrop-blur-md">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 The next generation of Filipino digital banking. Real-time balance updates, automated yield farming, and P2P instant liquidity.
               </p>
             </div>
@@ -330,43 +330,43 @@ export default function App() {
 
           <div className="space-y-4">
             {/* Live Telemetry monitor */}
-            <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-3">
-              <p className="text-[10px] uppercase tracking-widest text-[#22d3ee] font-mono font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+            <div className="bg-white/80 border border-sky-100 shadow-sm backdrop-blur-md rounded-2xl p-4 space-y-3">
+              <p className="text-[10px] uppercase tracking-widest text-sky-600 font-mono font-bold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping" />
                 Live Telemetry
               </p>
               
-              <div className="space-y-2 text-xs font-mono text-slate-300">
+              <div className="space-y-2 text-xs font-mono text-slate-600">
                 <div className="flex justify-between items-center">
                   <span>Connection:</span>
-                  <span className="text-emerald-400 font-bold">CONNECTED</span>
+                  <span className="text-emerald-600 font-bold">CONNECTED</span>
                 </div>
-                <div className="flex justify-between items-center text-slate-400">
+                <div className="flex justify-between items-center text-slate-500">
                   <span>Engine:</span>
-                  <span className="text-white">Supersonic Live</span>
+                  <span className="text-slate-800 font-semibold">Supersonic Live</span>
                 </div>
-                <div className="flex justify-between items-center text-slate-400">
+                <div className="flex justify-between items-center text-slate-500">
                   <span>Session:</span>
-                  <span className="text-cyan-400 font-bold truncate max-w-[100px]">{currentUser?.name.split(' ')[0]}</span>
+                  <span className="text-sky-600 font-bold truncate max-w-[100px]">{currentUser?.name.split(' ')[0]}</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-1">
-              <p className="text-[10px] uppercase tracking-widest text-slate-400 font-mono font-bold">Reserves Pool</p>
+            <div className="bg-white/80 border border-sky-100 shadow-sm backdrop-blur-md rounded-2xl p-4 shadow-xl space-y-1">
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-bold">Reserves Pool</p>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-xs text-slate-305 font-medium font-sans">Peso Asset Base</span>
-                <span className="text-white font-mono text-xs font-bold font-sans">
+                <span className="text-xs text-slate-600 font-medium font-sans">Peso Asset Base</span>
+                <span className="text-slate-800 font-mono text-xs font-bold font-sans">
                   ₱{(wallet?.balance ? wallet.balance + 1128450 : 1238450).toLocaleString(undefined, {minimumFractionDigits: 2})}
                 </span>
               </div>
-              <div className="w-full bg-slate-800 h-1 rounded-full mt-2 overflow-hidden">
-                <div className="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-[85%]" />
+              <div className="w-full bg-sky-100 h-1 rounded-full mt-2 overflow-hidden">
+                <div className="bg-gradient-to-r from-sky-450 to-sky-600 h-full w-[85%]" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-1 text-slate-500 font-mono text-[9px] uppercase tracking-wider leading-normal">
+          <div className="space-y-1 text-slate-400 font-mono text-[9px] uppercase tracking-wider leading-normal">
             <p>BSP REGISTERED e-MONEY</p>
             <p>© 2026 JCASH INC.</p>
           </div>
@@ -376,24 +376,24 @@ export default function App() {
         <div className="flex flex-col items-center shrink-0">
           {/* PWA Promo Install Bar on top (Desktop only context) */}
           {showPwaBanner && (
-            <div className="hidden md:flex max-w-[350px] w-full bg-white/5 border border-white/10 backdrop-blur-md mb-4 p-3 rounded-2xl items-center justify-between text-xs z-20">
+            <div className="hidden md:flex max-w-[350px] w-full bg-white/90 border border-sky-100 shadow-sm backdrop-blur-md mb-4 p-3 rounded-2xl items-center justify-between text-xs z-20">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-cyan-950/80 border border-cyan-800/30 flex items-center justify-center text-cyan-400 font-bold shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-sky-100 border border-sky-200 flex items-center justify-center text-sky-700 font-bold shrink-0">
                   J
                 </div>
                 <div>
-                  <p className="font-bold text-white leading-tight text-[11px]">Install Jcash app</p>
-                  <p className="text-[9px] text-slate-400 mt-0.5 font-sans">Launches standalone offline</p>
+                  <p className="font-bold text-slate-805 text-slate-800 leading-tight text-[11px]">Install Jcash app</p>
+                  <p className="text-[9px] text-slate-500 mt-0.5 font-sans">Launches standalone offline</p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setShowPwaBanner(false)} className="px-2 py-1 text-slate-400 hover:text-white text-[10px]">Ignore</button>
+                <button onClick={() => setShowPwaBanner(false)} className="px-2 py-1 text-slate-405 text-slate-400 hover:text-slate-600 text-[10px] cursor-pointer">Ignore</button>
                 <button 
                   onClick={() => {
                     alert("⭐️ Jcash PWA:\nTo install this app on your device, click the Share / Install button in your browser navigation bar.");
                     setShowPwaBanner(false);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[10px] transition"
+                  className="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-550 text-white font-bold text-[10px] transition cursor-pointer"
                 >
                   Install
                 </button>
@@ -402,19 +402,19 @@ export default function App() {
           )}
 
           {/* Primary Smartphone Mockup Enveloper wrapper */}
-          <div className="w-[350px] min-h-[730px] max-h-[820px] bg-slate-950/85 backdrop-blur-xl border-[8px] border-slate-900 rounded-[44px] shadow-2xl flex flex-col relative overflow-hidden border-opacity-90">
+          <div className="w-[350px] min-h-[730px] max-h-[820px] bg-sky-50 border-[8px] border-slate-800 rounded-[44px] shadow-2xl flex flex-col relative overflow-hidden border-opacity-90">
         
         {/* Smartphone top status panel notches is simulated */}
-        <div className="bg-slate-950 text-slate-300 px-6 py-3 flex items-center justify-between text-xs select-none relative z-20 shrink-0">
-          <span className="font-semibold font-mono tracking-wide">{currentTime || '12:00 PM'}</span>
+        <div className="bg-sky-100/60 text-slate-700 px-6 py-3 flex items-center justify-between text-xs select-none relative z-20 shrink-0 border-b border-sky-200/50">
+          <span className="font-bold font-mono tracking-wide">{currentTime || '12:00 PM'}</span>
           
           {/* Simulated centered punch-hole camera */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-2 w-28 h-[18px] bg-black rounded-full border border-slate-850" />
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-2 w-28 h-[18px] bg-black rounded-full border border-slate-700" />
           
-          <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
-            <Signal className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-500">
+            <Signal className="w-3.5 h-3.5 text-sky-600 font-bold" />
             <span className="font-bold tracking-tighter mr-1 text-[9px]">5G LTE</span>
-            <Battery className="w-4 h-4 text-emerald-400" />
+            <Battery className="w-4 h-4 text-emerald-600 font-extrabold" />
           </div>
         </div>
 
@@ -425,16 +425,16 @@ export default function App() {
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -50, opacity: 0 }}
-              className="absolute top-11 inset-x-4 z-50 p-3 bg-slate-900 border border-cyan-500/30 rounded-xl flex gap-3 text-xs shadow-[0_4px_12px_rgba(6,182,212,0.15)] animate-[pulse_3s_infinite]"
+              className="absolute top-11 inset-x-4 z-50 p-3 bg-white border border-sky-205 border-sky-205 border-sky-200 rounded-xl flex gap-3 text-xs shadow-xl animate-[pulse_3s_infinite] text-slate-800"
             >
               <span className="text-xl">
                 {toast.type === 'payment' ? '💸' : toast.type === 'cashback' ? '🎁' : '🔔'}
               </span>
               <div className="flex-1">
-                <h5 className="font-bold text-white leading-snug">{toast.title}</h5>
-                <p className="text-slate-400 text-[11px] leading-relaxed mt-0.5">{toast.description}</p>
+                <h5 className="font-bold text-slate-800 leading-snug">{toast.title}</h5>
+                <p className="text-slate-500 text-[11px] leading-relaxed mt-0.5">{toast.description}</p>
               </div>
-              <button onClick={() => setToast(null)} className="text-slate-500 hover:text-white shrink-0 self-start">
+              <button onClick={() => setToast(null)} className="text-slate-400 hover:text-slate-600 shrink-0 self-start cursor-pointer">
                 <X className="w-3.5 h-3.5" />
               </button>
             </motion.div>
@@ -442,22 +442,22 @@ export default function App() {
         </AnimatePresence>
 
         {/* Global Wallet Main Window Wrapper */}
-        <div className="flex-1 overflow-y-auto px-5 pt-3 pb-24 relative">
+        <div className="flex-1 overflow-y-auto px-5 pt-3 pb-24 relative bg-sky-50 text-slate-800">
           
           {/* APP LEVEL REUSABLE NOTIFICATION BELL HEADER */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-slate-900 mb-4 sticky top-0 bg-slate-950/80 backdrop-blur z-15">
+          <div className="flex items-center justify-between pb-3.5 border-b border-sky-100 mb-4 sticky top-0 bg-sky-50/90 backdrop-blur z-15">
             <div className="flex items-center gap-2">
               <img 
                 src={currentUser?.avatar} 
                 alt={currentUser?.name} 
-                className="w-9 h-9 rounded-full border border-cyan-500 object-cover cursor-pointer hover:opacity-80"
+                className="w-9 h-9 rounded-full border border-sky-300 object-cover cursor-pointer hover:opacity-80"
                 onClick={() => selectTab('profile')} 
               />
               <div>
-                <p className="text-[10px] text-slate-500 font-semibold tracking-wider font-mono">PHILIPPINE WALLET</p>
+                <p className="text-[10px] text-slate-500 font-bold tracking-wider font-mono">PHILIPPINE WALLET</p>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-white">Hello, {currentUser?.name.split(' ')[0]}!</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Ledger Active Core" />
+                  <span className="text-xs font-bold text-slate-800">Hello, {currentUser?.name.split(' ')[0]}!</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Ledger Active Core" />
                 </div>
               </div>
             </div>
@@ -467,10 +467,10 @@ export default function App() {
               {currentUser?.role === 'admin' && (
                 <button
                   onClick={() => selectTab('admin')}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1 border ${
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1 border cursor-pointer ${
                     activeTab === 'admin' 
-                      ? 'bg-yellow-500 text-slate-950 border-transparent' 
-                      : 'bg-yellow-950/40 text-yellow-500 border-yellow-800/40'
+                      ? 'bg-yellow-500 text-slate-950 border-transparent shadow-xs font-extrabold' 
+                      : 'bg-yellow-50 text-yellow-700 border-yellow-250 border-yellow-200 font-bold'
                   }`}
                 >
                   ⚜️ Admin Panel
@@ -479,7 +479,7 @@ export default function App() {
 
               <button 
                 onClick={() => setShowNotifPanel(!showNotifPanel)}
-                className="w-9 h-9 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:bg-slate-850 relative cursor-pointer"
+                className="w-9 h-9 bg-white border border-sky-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-sky-600 hover:bg-sky-50 relative cursor-pointer shadow-xs animate-none"
               >
                 <Bell className="w-4.5 h-4.5" />
                 {unreadsCount > 0 && (
@@ -498,17 +498,17 @@ export default function App() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="absolute left-4 right-4 top-14 background glass p-4 rounded-2xl z-40 border border-slate-700/50 shadow-2xl space-y-3 shrink-0"
+                className="absolute left-4 right-4 top-14 bg-white border border-sky-100 p-4 rounded-2xl z-40 shadow-2xl space-y-3 shrink-0 text-slate-800"
               >
-                <div className="flex justify-between items-center pb-2 border-b border-white/5">
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-white uppercase font-display">
-                    <Bell className="w-3.5 h-3.5 text-cyan-400" />
+                <div className="flex justify-between items-center pb-2 border-b border-sky-100">
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-slate-800 uppercase font-display">
+                    <Bell className="w-3.5 h-3.5 text-sky-600 animate-pulse" />
                     Fintech System Alerts
                   </div>
-                  <div className="flex gap-2">
-                    <button onClick={handleMarkAsRead} className="text-[10px] text-cyan-400 hover:underline">Mark read</button>
-                    <span className="text-slate-700 text-[10px]">•</span>
-                    <button onClick={() => setShowNotifPanel(false)} className="text-[10px] text-slate-400 hover:text-white">Close</button>
+                  <div className="flex gap-2 font-semibold">
+                    <button onClick={handleMarkAsRead} className="text-[10px] text-sky-600 hover:underline cursor-pointer">Mark read</button>
+                    <span className="text-slate-300 text-[10px]">•</span>
+                    <button onClick={() => setShowNotifPanel(false)} className="text-[10px] text-slate-400 hover:text-slate-655 cursor-pointer">Close</button>
                   </div>
                 </div>
 
@@ -518,18 +518,18 @@ export default function App() {
                       <div 
                         key={n.id} 
                         className={`p-2.5 rounded-lg text-xs leading-normal transition ${
-                          n.read ? 'bg-slate-950/40 opacity-75' : 'bg-slate-900 border-l-2 border-cyan-400'
+                          n.read ? 'bg-sky-50 opacity-75' : 'bg-white border-l-2 border-sky-500 shadow-xs'
                         }`}
                       >
-                        <h6 className="font-bold text-white mb-0.5">{n.title}</h6>
-                        <p className="text-slate-400 text-[11px] leading-tight">{n.description}</p>
-                        <span className="text-[8px] text-slate-650 font-mono block mt-1.5">
+                        <h6 className="font-extrabold text-slate-850 text-slate-800 mb-0.5">{n.title}</h6>
+                        <p className="text-slate-500 text-[11px] leading-tight font-medium">{n.description}</p>
+                        <span className="text-[8px] text-slate-400 font-mono block mt-1.5 font-bold">
                           {new Date(n.created_at).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'})}
                         </span>
                       </div>
                     ))
                   ) : (
-                    <div className="py-6 text-center text-slate-500 text-xs text-mono">
+                    <div className="py-6 text-center text-slate-400 text-xs text-mono font-medium">
                       No live telemetry logs recorded
                     </div>
                   )}
@@ -542,17 +542,17 @@ export default function App() {
           {isLoading ? (
             <div className="space-y-4 py-8">
               {/* Premium Skeleton Loading components */}
-              <div className="h-32 bg-slate-900 border border-white/5 rounded-2xl animate-pulse p-4 flex flex-col justify-between">
-                <div className="w-1/3 h-4 bg-slate-800 rounded" />
-                <div className="w-1/2 h-8 bg-slate-800 rounded" />
-                <div className="w-2/3 h-3 bg-slate-800 rounded" />
+              <div className="h-32 bg-white border border-sky-100 rounded-2xl animate-pulse p-4 flex flex-col justify-between">
+                <div className="w-1/3 h-4 bg-sky-50 rounded" />
+                <div className="w-1/2 h-8 bg-sky-50 rounded" />
+                <div className="w-2/3 h-3 bg-sky-50 rounded" />
               </div>
               <div className="grid grid-cols-4 gap-3">
                 {[...Array(4)].map((_, idx) => (
-                  <div key={idx} className="h-16 bg-slate-900 rounded-xl animate-pulse" />
+                  <div key={idx} className="h-16 bg-sky-50 rounded-xl animate-pulse" />
                 ))}
               </div>
-              <div className="h-40 bg-slate-900 border border-white/5 rounded-2xl animate-pulse" />
+              <div className="h-40 bg-white border border-sky-100 rounded-2xl animate-pulse" />
             </div>
           ) : activeTab === 'home' ? (
             
@@ -560,21 +560,21 @@ export default function App() {
             <div className="space-y-4">
               
               {/* PRIMARY WALLET BALANCE GLASS CARD */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-900 to-indigo-950 border border-indigo-500/20 relative overflow-hidden text-left relative">
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-sky-600 to-blue-500 border border-sky-400/30 relative overflow-hidden text-left shadow-md">
                 {/* Background glow ball inside balance */}
-                <div className="absolute right-0 top-0 w-36 h-36 bg-cyan-400/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="absolute right-0 top-0 w-36 h-36 bg-white/15 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="space-y-4 relative z-10">
-                  <div className="flex justify-between items-center text-slate-300">
-                    <span className="text-xs font-mono font-medium tracking-wider uppercase flex items-center gap-1.5">
-                      <Shield className="w-3.5 h-3.5 text-cyan-400" />
+                  <div className="flex justify-between items-center text-sky-100">
+                    <span className="text-xs font-mono font-bold tracking-wider uppercase flex items-center gap-1.5">
+                      <Shield className="w-3.5 h-3.5 text-white" />
                       Jcash available Balance
                     </span>
                     <button 
                       onClick={() => setBalanceVisible(!balanceVisible)}
-                      className="text-slate-400 hover:text-white cursor-pointer p-0.5"
+                      className="text-sky-100 hover:text-white cursor-pointer p-0.5"
                     >
-                      {balanceVisible ? <EyeOff className="w-4.5 h-4.5 text-cyan-400" /> : <Eye className="w-4.5 h-4.5" />}
+                      {balanceVisible ? <EyeOff className="w-4.5 h-4.5 text-white" /> : <Eye className="w-4.5 h-4.5 text-white" />}
                     </button>
                   </div>
 
@@ -587,23 +587,23 @@ export default function App() {
                         '••••••'
                       )}
                     </h2>
-                    <p className="text-[10px] text-slate-400 font-mono">
+                    <p className="text-[10px] text-sky-100 font-mono font-medium">
                       Account Registered Line: {currentUser?.mobile}
                     </p>
                   </div>
 
                   {/* Micro dashboard stats */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-indigo-400/10 mt-1 text-[11px] font-mono text-slate-300">
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 mt-1 text-[11px] font-mono text-white">
                     <div>
-                      <span className="text-slate-400 text-[9px] uppercase">My Points Pool</span>
-                      <p className="font-bold text-yellow-400 flex items-center gap-0.5">
-                        <Sparkles className="w-3 h-3 text-yellow-400" /> 
+                      <span className="text-sky-100/80 text-[9px] uppercase font-bold">My Points Pool</span>
+                      <p className="font-bold text-yellow-350 flex items-center gap-0.5">
+                        <Sparkles className="w-3 h-3 text-yellow-300" /> 
                         {wallet ? wallet.points : 0} PTS
                       </p>
                     </div>
                     <div>
-                      <span className="text-slate-400 text-[9px] uppercase">Compounding Vault</span>
-                      <p className="font-bold text-cyan-400">
+                      <span className="text-sky-100/80 text-[9px] uppercase font-bold">Compounding Vault</span>
+                      <p className="font-bold text-white">
                         ₱{wallet ? wallet.savings.toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}
                       </p>
                     </div>
@@ -613,29 +613,29 @@ export default function App() {
 
               {/* QUICK CHANNELS ACTION MENU GRID */}
               <div className="space-y-2">
-                <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase px-1">Fintech Core services</label>
+                <label className="text-[10px] text-slate-500 font-bold tracking-wider uppercase px-1">Fintech Core services</label>
                 
                 <div className="grid grid-cols-4 gap-2.5">
                   {[
-                    { label: 'Send Cash', icon: <ArrowUpRight className="w-4.5 h-4.5 text-blue-400" />, action: () => openQuickActionSheet('send') },
-                    { label: 'Receive QR', icon: <QrCode className="w-4.5 h-4.5 text-purple-400" />, action: () => openQuickActionSheet('receive') },
-                    { label: 'Cash In', icon: <Landmark className="w-4.5 h-4.5 text-emerald-400" />, action: () => openQuickActionSheet('cashin') },
-                    { label: 'Pay Bills', icon: <FileText className="w-4.5 h-4.5 text-amber-400" />, action: () => openQuickActionSheet('bills') },
-                    { label: 'Buy Load', icon: <Smartphone className="w-4.5 h-4.5 text-pink-400" />, action: () => openQuickActionSheet('load') },
-                    { label: 'Claim Vouchers', icon: <Award className="w-4.5 h-4.5 text-yellow-400" />, action: () => selectTab('rewards') },
-                    { label: 'My Vault', icon: <Shield className="w-4.5 h-4.5 text-cyan-400" />, action: () => selectTab('wallet') },
-                    { label: 'History', icon: <History className="w-4.5 h-4.5 text-indigo-400" />, action: () => selectTab('transactions') }
+                    { label: 'Send Cash', icon: <ArrowUpRight className="w-4.5 h-4.5 text-blue-600" />, action: () => openQuickActionSheet('send') },
+                    { label: 'Receive QR', icon: <QrCode className="w-4.5 h-4.5 text-purple-600" />, action: () => openQuickActionSheet('receive') },
+                    { label: 'Cash In', icon: <Landmark className="w-4.5 h-4.5 text-emerald-600" />, action: () => openQuickActionSheet('cashin') },
+                    { label: 'Pay Bills', icon: <FileText className="w-4.5 h-4.5 text-amber-600" />, action: () => openQuickActionSheet('bills') },
+                    { label: 'Buy Load', icon: <Smartphone className="w-4.5 h-4.5 text-pink-600" />, action: () => openQuickActionSheet('load') },
+                    { label: 'Claim Vouchers', icon: <Award className="w-4.5 h-4.5 text-yellow-600 font-bold" />, action: () => selectTab('rewards') },
+                    { label: 'My Vault', icon: <Shield className="w-4.5 h-4.5 text-sky-600" />, action: () => selectTab('wallet') },
+                    { label: 'History', icon: <History className="w-4.5 h-4.5 text-indigo-600" />, action: () => selectTab('transactions') }
                   ].map((act, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={act.action}
-                      className="p-3 bg-slate-900 border border-slate-805/50 rounded-xl hover:bg-slate-850 hover:border-slate-700 hover:scale-105 active:scale-95 transition-all text-center flex flex-col items-center justify-center space-y-1.5 shrink-0"
+                      className="p-3 bg-white border border-sky-100/80 rounded-xl hover:bg-sky-100/55 hover:border-sky-305 hover:scale-105 active:scale-95 transition-all text-center flex flex-col items-center justify-center space-y-1.5 shrink-0 shadow-xs cursor-pointer"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-slate-950 flex items-center justify-center border border-white/5 shadow-inner">
+                      <div className="w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center border border-sky-100 shadow-inner">
                         {act.icon}
                       </div>
-                      <span className="text-[9px] font-bold text-slate-300 w-full truncate leading-tight">{act.label}</span>
+                      <span className="text-[9px] font-bold text-slate-700 w-full truncate leading-tight">{act.label}</span>
                     </button>
                   ))}
                 </div>
@@ -644,14 +644,14 @@ export default function App() {
               {/* SAVINGS COMPAUND COMPACT BANNER ADVERTISEMENT */}
               <div 
                 onClick={() => selectTab('wallet')}
-                className="p-3.5 bg-gradient-to-r from-teal-950/70 to-slate-900 border border-teal-500/20 rounded-xl flex items-center justify-between text-left cursor-pointer"
+                className="p-3.5 bg-gradient-to-r from-teal-50 to-emerald-50/70 border border-teal-200/60 rounded-xl flex items-center justify-between text-left cursor-pointer shadow-xs"
               >
                 <div className="space-y-0.5">
-                  <span className="text-[9px] bg-teal-950 border border-teal-800/20 px-2 py-0.5 rounded-full text-teal-400 font-bold font-mono tracking-wider uppercase">Jcash Gvault</span>
-                  <h4 className="text-xs font-bold text-white mt-1">Grow Savings at 6.50% p.a. compound!</h4>
-                  <p className="text-[9px] text-slate-400">Insured by BSP PDIC registries. Withdraw anytime.</p>
+                  <span className="text-[9px] bg-teal-100 border border-teal-200 px-2 py-0.5 rounded-full text-teal-700 font-bold font-mono tracking-wider uppercase">Jcash Gvault</span>
+                  <h4 className="text-xs font-bold text-slate-800 mt-1">Grow Savings at 6.50% p.a. compound!</h4>
+                  <p className="text-[9px] text-slate-500 font-medium animate-none">Insured by BSP PDIC registries. Withdraw anytime.</p>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-teal-400 animate-pulse" />
+                <ArrowUpRight className="w-4 h-4 text-teal-600 animate-pulse" />
               </div>
 
               {/* QUICK TRANSACTION PREVIEW SECTION */}
@@ -669,21 +669,21 @@ export default function App() {
             /* TAB 2: fintech WALLET & SAVINGS VAULT VIEW */
             <div className="space-y-4">
               
-              <div className="p-5 bg-gradient-to-br from-teal-950 to-slate-950 border border-teal-500/20 rounded-2xl relative text-left">
+              <div className="p-5 bg-gradient-to-br from-teal-600 to-teal-500 border border-teal-400/20 rounded-2xl relative text-left shadow-md">
                 <div className="absolute top-3 right-3 opacity-10">
-                  <Shield className="w-20 h-20 text-teal-400" />
+                  <Shield className="w-20 h-20 text-white" />
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex gap-1.5 items-center">
-                    <span className="text-xs text-teal-400 font-mono font-bold tracking-wider uppercase">Jcash Gvault Savings Account</span>
+                    <span className="text-xs text-teal-100 font-mono font-bold tracking-wider uppercase">Jcash Gvault Savings Account</span>
                   </div>
 
                   <div>
                     <h2 className="text-3xl font-display font-black text-white">
                       ₱{wallet ? wallet.savings.toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}
                     </h2>
-                    <p className="text-[10px] text-slate-400 font-mono mt-1">
+                    <p className="text-[10px] text-teal-50 font-mono mt-1 font-medium">
                       Accruing interest monthly @ 6.50% per annum compound interest
                     </p>
                   </div>
@@ -692,13 +692,13 @@ export default function App() {
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <button
                       onClick={() => setVaultModal('deposit')}
-                      className="py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition shadow-lg shadow-teal-900/20"
+                      className="py-2.5 bg-white text-teal-700 font-bold text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition hover:bg-teal-50 shadow-xs"
                     >
                       Deposit to Vault
                     </button>
                     <button
                       onClick={() => setVaultModal('withdraw')}
-                      className="py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition"
+                      className="py-2.5 bg-white/20 hover:bg-white/30 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition border border-white/10"
                     >
                       Withdraw to Balance
                     </button>
@@ -707,25 +707,25 @@ export default function App() {
               </div>
 
               {/* INTERACTIVE INVESTMENT CHART COMPONENT OR PROGRESS ACCRUEMENTS */}
-              <div className="p-4 bg-slate-900 border border-white/5 rounded-xl space-y-3.5">
-                <h5 className="text-[11px] font-mono tracking-wider uppercase font-bold text-slate-300">Vault Balance Projection</h5>
+              <div className="p-4 bg-white border border-sky-100 rounded-xl space-y-3.5 shadow-xs">
+                <h5 className="text-[11px] font-mono tracking-wider uppercase font-bold text-slate-500">Vault Balance Projection</h5>
                 
-                <div className="space-y-2.5 text-xs text-slate-300">
-                  <div className="flex justify-between items-center bg-slate-950 p-2.5 rounded-lg">
+                <div className="space-y-2.5 text-xs text-slate-700 font-medium">
+                  <div className="flex justify-between items-center bg-sky-50/50 p-2.5 rounded-lg">
                     <span>Baseline savings balance</span>
-                    <span className="font-bold text-white">₱{wallet ? wallet.savings.toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
+                    <span className="font-extrabold text-slate-800">₱{wallet ? wallet.savings.toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950 p-2.5 rounded-lg">
+                  <div className="flex justify-between items-center bg-sky-50/50 p-2.5 rounded-lg">
                     <span>Est. Monthly Accrual (+6.5%)</span>
-                    <span className="font-bold text-teal-400">+₱{wallet ? ((wallet.savings * 0.065) / 12).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
+                    <span className="font-extrabold text-teal-600">+₱{wallet ? ((wallet.savings * 0.065) / 12).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
                   </div>
-                  <div className="flex justify-between items-center bg-slate-950 p-2.5 rounded-lg">
+                  <div className="flex justify-between items-center bg-sky-50/50 p-2.5 rounded-lg">
                     <span>Estimated 1-Year valuation</span>
-                    <span className="font-bold text-cyan-400">₱{wallet ? (wallet.savings * 1.065).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
+                    <span className="font-extrabold text-sky-600">₱{wallet ? (wallet.savings * 1.065).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00'}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-teal-950/20 border border-teal-800/20 text-teal-300 rounded-lg text-[10px] leading-relaxed">
+                <div className="p-3 bg-teal-50/80 border border-teal-150 border-teal-150 border-teal-250 border-teal-200 text-teal-800 rounded-lg text-[10px] leading-relaxed font-mono">
                   💡 Compound interest accumulates daily and pay schedules roll out on the 1st of every calendar month. Insured up to ₱500,000 via standard regional Philippine bank policies.
                 </div>
               </div>
@@ -733,7 +733,7 @@ export default function App() {
               {/* LEDGER FILTERED EXCLUSIVELY FOR VAULT MOVEMENTS */}
               <div className="space-y-2">
                 <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase px-1">Vault history ledger</label>
-                <div className="bg-slate-900 border border-white/5 rounded-xl p-2 text-center py-6 text-xs text-slate-500 font-mono">
+                <div className="bg-white border border-sky-100 rounded-xl p-2 text-center py-6 text-xs text-slate-400 font-mono shadow-xs">
                   All Vault entries sync directly to primary dashboard Ledger index.
                 </div>
               </div>
@@ -774,44 +774,44 @@ export default function App() {
         {/* COMPREHENSIVE SAVINGS VAULT MODAL SHEET */}
         <AnimatePresence>
           {vaultModal && (
-            <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
+            <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setVaultModal(null)}
-                className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/45 backdrop-blur-xs"
               />
               <motion.div 
                 initial={{ y: "100%", opacity: 0.8 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "100%", opacity: 0.8 }}
-                className="relative w-full max-w-md bg-slate-900 rounded-t-2xl md:rounded-2xl border-t border-slate-700/40 p-5 z-10 space-y-4"
+                className="relative w-full max-w-sm bg-white rounded-2xl border border-sky-100 p-5 z-10 space-y-4 shadow-2xl"
               >
-                <div className="flex justify-between items-center pb-2 border-b border-slate-800">
-                  <h4 className="text-sm font-bold text-white uppercase font-display flex items-center gap-1.5">
-                    <Shield className="w-4 h-4 text-teal-400 animate-pulse" />
+                <div className="flex justify-between items-center pb-2 border-b border-sky-100">
+                  <h4 className="text-sm font-bold text-slate-800 uppercase font-display flex items-center gap-1.5">
+                    <Shield className="w-4 h-4 text-teal-600 animate-pulse" />
                     Vault {vaultModal === 'deposit' ? 'Deposit' : 'Withdrawal'}
                   </h4>
-                  <button onClick={() => setVaultModal(null)} className="text-slate-400 hover:text-white">
+                  <button onClick={() => setVaultModal(null)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="space-y-3 pt-2 text-left">
+                <div className="space-y-3 pt-2 text-left text-slate-850">
                   <div>
-                    <label className="text-xs text-slate-400 font-medium font-mono">Amount (₱)</label>
-                    <div className="relative">
+                    <label className="text-xs text-slate-500 font-bold font-mono">Amount (₱)</label>
+                    <div className="relative mt-1">
                       <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm">₱</span>
                       <input
                         type="number"
                         placeholder="0.00"
                         value={vaultAmount}
                         onChange={(e) => setVaultAmount(e.target.value)}
-                        className="w-full text-base font-bold bg-slate-950 border border-white/5 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none"
+                        className="w-full text-base font-bold bg-sky-50/80 border border-sky-200 rounded-xl pl-8 pr-4 py-3 text-slate-800 focus:outline-none"
                       />
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-1">
+                    <p className="text-[10px] text-slate-505 text-slate-500 mt-1 font-mono font-medium">
                       {vaultModal === 'deposit' 
                         ? `Available Balance: ₱${wallet?.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}` 
                         : `Compounding Savings: ₱${wallet?.savings.toLocaleString(undefined, {minimumFractionDigits: 2})}`
@@ -820,10 +820,10 @@ export default function App() {
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <button onClick={() => setVaultModal(null)} className="flex-1 py-2.5 text-xs text-slate-400 hover:text-white bg-slate-800 rounded-lg">Cancel</button>
+                    <button onClick={() => setVaultModal(null)} className="flex-1 py-2.5 text-xs text-slate-500 hover:text-slate-705 bg-slate-100 hover:bg-slate-205 hover:bg-slate-200 rounded-lg cursor-pointer">Cancel</button>
                     <button 
                       onClick={() => handleVaultFundTransfer(vaultModal)} 
-                      className="flex-1 py-2.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-500 rounded-lg"
+                      className="flex-1 py-2.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-500 rounded-lg cursor-pointer"
                     >
                       Authorize Transfer
                     </button>
@@ -835,7 +835,7 @@ export default function App() {
         </AnimatePresence>
 
         {/* BOTTOM RESPONSIVE DOCK FLOATING GLASS TAP NAVIGATOR */}
-        <div className="absolute bottom-4 inset-x-4 bg-slate-950/75 backdrop-blur border border-slate-800/80 rounded-2xl p-2.5 flex justify-between items-center z-30 shadow-2xl relative shrink-0">
+        <div className="absolute bottom-4 inset-x-4 bg-white/95 backdrop-blur-sm border border-sky-100 shadow-xl rounded-2xl p-2.5 flex justify-between items-center z-30 relative shrink-0">
           {[
             { id: 'home', icon: <Home className="w-5 h-5" />, label: 'Home' },
             { id: 'wallet', icon: <WalletIcon className="w-5 h-5" />, label: 'Savings' },
@@ -844,23 +844,23 @@ export default function App() {
             <button
               key={tab.id}
               onClick={() => selectTab(tab.id as any)}
-              className={`flex flex-col items-center flex-1 justify-center transition-all ${
+              className={`flex flex-col items-center flex-1 justify-center transition-all cursor-pointer ${
                 activeTab === tab.id 
-                  ? 'text-cyan-400 font-extrabold scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'text-sky-600 font-bold scale-110 drop-shadow-[0_0_8px_rgba(2,132,199,0.15)]' 
+                  : 'text-slate-400 hover:text-slate-600 font-medium'
               }`}
             >
               {tab.icon}
-              <span className="text-[8px] font-medium mt-1 leading-none">{tab.label}</span>
+              <span className="text-[8px] font-bold mt-1 leading-none">{tab.label}</span>
             </button>
           ))}
 
           {/* CENTRAL KEYPAD FLOATING SCAN DRAWER TRIGGER */}
           <div className="relative -top-4 shrink-0 mx-2">
-            <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full blur opacity-45 pulse-slow" />
+            <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500 to-sky-400 rounded-full blur opacity-45 pulse-slow" />
             <button
               onClick={() => openQuickActionSheet('qrpay')}
-              className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full flex items-center justify-center text-white relative hover:scale-105 active:scale-95 transition shadow-lg shadow-cyan-500/35 cursor-pointer border border-cyan-300/30"
+              className="w-12 h-12 bg-gradient-to-r from-blue-600 to-sky-500 rounded-full flex items-center justify-center text-white relative hover:scale-105 active:scale-95 transition shadow-lg shadow-sky-500/35 cursor-pointer border border-sky-300/30"
               title="Scan QR Code Merchant"
             >
               <QrCode className="w-5 h-5" />
@@ -874,14 +874,14 @@ export default function App() {
             <button
               key={tab.id}
               onClick={() => selectTab(tab.id as any)}
-              className={`flex flex-col items-center flex-1 justify-center transition-all ${
+              className={`flex flex-col items-center flex-1 justify-center transition-all cursor-pointer ${
                 activeTab === tab.id 
-                  ? 'text-cyan-400 font-extrabold scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]' 
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'text-sky-600 font-bold scale-110 drop-shadow-[0_0_8px_rgba(2,132,199,0.15)]' 
+                  : 'text-slate-400 hover:text-slate-600 font-medium'
               }`}
             >
               {tab.icon}
-              <span className="text-[8px] font-medium mt-1 leading-none">{tab.label}</span>
+              <span className="text-[8px] font-bold mt-1 leading-none">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -891,71 +891,71 @@ export default function App() {
     </div> {/* Closes CENTER COLUMN */}
 
       {/* RIGHT COLUMN: Interactive vouchers and trends */}
-      <div className="hidden lg:flex flex-col w-[260px] xl:w-[300px] shrink-0 text-left py-4 space-y-5 select-none font-sans">
+      <div className="hidden lg:flex flex-col w-[260px] xl:w-[300px] shrink-0 text-left py-4 space-y-5 select-none font-sans text-slate-800">
         {/* Promo Voucher box */}
-        <div className="bg-gradient-to-br from-cyan-950/40 to-blue-950/40 border border-cyan-500/20 backdrop-blur-md rounded-3xl p-4.5 shadow-xl space-y-3.5 relative overflow-hidden">
-          <div className="absolute right-[-10px] top-[-10px] w-20 h-20 bg-cyan-400/10 rounded-full blur-xl" />
+        <div className="bg-gradient-to-br from-sky-50 to-blue-50/60 border border-sky-100 backdrop-blur-md rounded-3xl p-4.5 shadow-md space-y-3.5 relative overflow-hidden">
+          <div className="absolute right-[-10px] top-[-10px] w-20 h-20 bg-sky-200/20 rounded-full blur-xl" />
           
           <div className="space-y-1">
-            <span className="text-[9px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-bold font-mono tracking-wider uppercase">Promos Active</span>
-            <h4 className="text-sm font-bold text-white mt-1 leading-snug">₱50.00 Rebate Ready!</h4>
-            <p className="text-[11px] text-slate-400 leading-normal">
+            <span className="text-[9px] bg-sky-100 text-sky-700 border border-sky-200 px-2 py-0.5 rounded-full font-bold font-mono tracking-wider uppercase">Promos Active</span>
+            <h4 className="text-sm font-bold text-slate-850 mt-1 leading-snug">₱50.00 Rebate Ready!</h4>
+            <p className="text-[11px] text-slate-505 text-slate-550 leading-normal font-medium">
               You earned an instantaneous billing rebate. Tap claim below to credit your balance in real-time.
             </p>
           </div>
 
           <button
             onClick={claimVoucherFromSidebar}
-            className="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-cyan-500/15 cursor-pointer"
+            className="w-full py-2 bg-gradient-to-r from-sky-600 to-blue-500 hover:from-sky-550 hover:to-blue-450 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-sky-500/15 cursor-pointer"
           >
             Claim Rebate Item ₱50
           </button>
         </div>
 
         {/* Sparkline & trends card */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-3xl p-4.5 shadow-xl space-y-4 font-sans">
+        <div className="bg-white border border-sky-100 rounded-3xl p-4.5 shadow-xl space-y-4 font-sans shadow-xs">
           <div className="space-y-0.5">
-            <p className="text-[10px] uppercase tracking-widest text-slate-400 font-mono font-bold">Market Quotations</p>
-            <p className="text-[9.5px] text-slate-500 font-mono">Live local standard quotes in Peso</p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-bold">Market Quotations</p>
+            <p className="text-[9.5px] text-slate-400 font-mono font-medium">Live local standard quotes in Peso</p>
           </div>
 
           <div className="space-y-2.5">
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-slate-300 font-medium font-sans">BTC / PHP</span>
-              <span className="font-mono font-bold text-emerald-400 flex items-center gap-1 text-[11px]">
-                ₱5,482,040 <span className="text-[9px] bg-emerald-500/10 px-1 py-0.2 rounded">+2.4%</span>
+            <div className="flex justify-between items-center text-xs font-semibold">
+              <span className="text-slate-600 font-medium font-sans">BTC / PHP</span>
+              <span className="font-mono font-bold text-emerald-650 text-emerald-600 flex items-center gap-1 text-[11px]">
+                ₱5,482,040 <span className="text-[9px] bg-emerald-50 text-emerald-650 px-1 py-0.2 rounded">+2.4%</span>
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-slate-305 font-medium font-sans">ETH / PHP</span>
-              <span className="font-mono font-bold text-rose-400 flex items-center gap-1 text-[11px]">
-                ₱184,850 <span className="text-[9px] bg-rose-500/10 px-1 py-0.2 rounded">-0.8%</span>
+            <div className="flex justify-between items-center text-xs font-semibold">
+              <span className="text-slate-600 font-medium font-sans">ETH / PHP</span>
+              <span className="font-mono font-bold text-rose-650 text-rose-600 flex items-center gap-1 text-[11px]">
+                ₱184,850 <span className="text-[9px] bg-rose-50 text-rose-655 px-1 py-0.2 rounded">-0.8%</span>
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-slate-305 font-medium font-sans">USD / PHP</span>
-              <span className="font-mono font-bold text-slate-200 flex items-center gap-1 text-[11px]">
+            <div className="flex justify-between items-center text-xs font-semibold">
+              <span className="text-slate-650 text-slate-600 font-medium font-sans">USD / PHP</span>
+              <span className="font-mono font-bold text-slate-800 flex items-center gap-1 text-[11px]">
                 ₱56.42 <span className="text-[9px] text-slate-400 font-mono">STABLE</span>
               </span>
             </div>
           </div>
 
           {/* Sparkline chart bar visuals */}
-          <div className="pt-3 border-t border-white/5">
+          <div className="pt-3 border-t border-sky-100">
             <p className="text-[9px] uppercase tracking-widest text-slate-500 font-mono font-bold mb-2">Simulated Weekly Spend Outlay</p>
             <div className="flex items-end justify-between gap-1.5 h-12 pt-1 px-1">
               {[
-                { d: 'Mon', h: 'h-4 bg-slate-705' },
-                { d: 'Tue', h: 'h-8 bg-slate-600' },
-                { d: 'Wed', h: 'h-5 bg-slate-705' },
-                { d: 'Thu', h: 'h-10 bg-cyan-500/60' },
-                { d: 'Fri', h: 'h-12 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.4)]' },
-                { d: 'Sat', h: 'h-7 bg-slate-600' },
-                { d: 'Sun', h: 'h-6 bg-slate-750' }
+                { d: 'Mon', h: 'h-4 bg-sky-200' },
+                { d: 'Tue', h: 'h-8 bg-sky-300' },
+                { d: 'Wed', h: 'h-5 bg-sky-200' },
+                { d: 'Thu', h: 'h-10 bg-sky-400/80' },
+                { d: 'Fri', h: 'h-12 bg-sky-500 shadow-[0_0_8px_rgba(2,132,199,0.15)] animate-none' },
+                { d: 'Sat', h: 'h-7 bg-sky-305 bg-sky-300' },
+                { d: 'Sun', h: 'h-6 bg-sky-250 bg-sky-200' }
               ].map((bar, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <div className={`w-full rounded-xs transition-all ${bar.h}`} />
-                  <span className="text-[8px] text-slate-600 font-mono">{bar.d}</span>
+                  <span className="text-[8px] text-slate-400 font-bold font-mono">{bar.d}</span>
                 </div>
               ))}
             </div>

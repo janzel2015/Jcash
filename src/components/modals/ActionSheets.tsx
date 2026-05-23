@@ -55,6 +55,8 @@ export default function ActionSheets({
   const [qrSelectedMerchant, setQrSelectedMerchant] = useState<typeof DEMO_MERCHANTS[0] | null>(null);
   const [qrAmount, setQrAmount] = useState<string>('');
   const [qrScanning, setQrScanning] = useState<boolean>(true);
+  const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>('idle');
+  const [scanProgress, setScanProgress] = useState<number>(0);
 
   // CASH IN DATA STATE
   const [cashInMethod, setCashInMethod] = useState<'bank' | 'overthecounter' | null>(null);
@@ -120,6 +122,62 @@ export default function ActionSheets({
     return 'REF' + Math.floor(100000000 + Math.random() * 900000000).toString();
   };
 
+  // Simulated Scanning Logic
+  const playBeep = () => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 1350; // high crisp beep
+      gainNode.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      oscillator.start();
+      setTimeout(() => {
+        oscillator.stop();
+        audioCtx.close();
+      }, 75);
+    } catch (e) {
+      console.log('Audio Context suppressed/unsupported:', e);
+    }
+  };
+
+  const runSimulatedScan = () => {
+    if (scanStatus === 'scanning') return;
+    setScanStatus('scanning');
+    setScanProgress(0);
+    setError(null);
+  };
+
+  useEffect(() => {
+    let interval: any;
+    if (scanStatus === 'scanning') {
+      interval = setInterval(() => {
+        setScanProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            playBeep();
+            
+            // Randomly select merchant & prefill amount
+            const randomMerchant = DEMO_MERCHANTS[Math.floor(Math.random() * DEMO_MERCHANTS.length)];
+            const randomAmountVal = Math.floor(80 + Math.random() * 1200) + (Math.random() > 0.5 ? 0.5 : 0);
+            
+            setQrSelectedMerchant(randomMerchant);
+            setQrAmount(randomAmountVal.toString());
+            setQrScanning(false);
+            setScanStatus('success');
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 150);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [scanStatus]);
+
   // RESET FUNCTION
   const handleReset = () => {
     setStep(1);
@@ -134,6 +192,8 @@ export default function ActionSheets({
     setQrSelectedMerchant(null);
     setQrAmount('');
     setQrScanning(true);
+    setScanStatus('idle');
+    setScanProgress(0);
     setCashInMethod(null);
     setCashInAmount('');
     setBillAcctNo('');
@@ -573,7 +633,7 @@ export default function ActionSheets({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
         />
 
         {/* Modal Container */}
@@ -582,44 +642,44 @@ export default function ActionSheets({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "100%", opacity: 0.5 }}
           transition={{ type: "spring", damping: 25, stiffness: 220 }}
-          className="relative w-full max-w-md bg-slate-900 border-t border-slate-700/40 md:border md:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] text-slate-100 font-sans"
+          className="relative w-full max-w-md bg-white border-t border-sky-100 md:border md:rounded-2xl rounded-t-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] md:max-h-[85vh] text-slate-800 font-sans"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-5 border-b border-white/5 bg-slate-900/60 backdrop-blur sticky top-0 z-10">
+          <div className="flex items-center justify-between p-5 border-b border-sky-100 bg-sky-50/90 backdrop-blur sticky top-0 z-10">
             <div className="flex items-center gap-2.5">
               {type === 'send' && (
-                <div className="w-9 h-9 rounded-xl bg-blue-950/80 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                   <Send className="w-5 h-5" />
                 </div>
               )}
               {type === 'receive' && (
-                <div className="w-9 h-9 rounded-xl bg-purple-950/80 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
                   <QrCode className="w-5 h-5" />
                 </div>
               )}
               {type === 'qrpay' && (
-                <div className="w-9 h-9 rounded-xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <div className="w-9 h-9 rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600">
                   <Compass className="w-5 h-5 animate-pulse" />
                 </div>
               )}
               {type === 'cashin' && (
-                <div className="w-9 h-9 rounded-xl bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
                   <Landmark className="w-5 h-5" />
                 </div>
               )}
               {type === 'bills' && (
-                <div className="w-9 h-9 rounded-xl bg-amber-950/80 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
                   <FileText className="w-5 h-5" />
                 </div>
               )}
               {type === 'load' && (
-                <div className="w-9 h-9 rounded-xl bg-pink-950/80 border border-pink-500/30 flex items-center justify-center text-pink-400">
+                <div className="w-9 h-9 rounded-xl bg-pink-50 border border-pink-200 flex items-center justify-center text-pink-600">
                   <Wifi className="w-5 h-5 animate-bounce" />
                 </div>
               )}
 
               <div>
-                <h3 className="text-base font-display font-extrabold text-white">
+                <h3 className="text-base font-display font-extrabold text-slate-800">
                   {type === 'send' && 'Express Send Cash'}
                   {type === 'receive' && 'My Jcash QR Payload'}
                   {type === 'qrpay' && 'Scan & Pay Merchant'}
@@ -627,7 +687,7 @@ export default function ActionSheets({
                   {type === 'bills' && 'Pay Bills Online'}
                   {type === 'load' && 'Reload Mobile Load'}
                 </h3>
-                <p className="text-[10px] text-slate-400 tracking-wide uppercase font-mono">
+                <p className="text-[10px] text-slate-500 tracking-wide uppercase font-mono">
                   {step === 1 && 'Transaction Info'}
                   {step === 2 && 'Verification Preview'}
                   {step === 3 && 'Payment Success Receipt'}
@@ -637,7 +697,7 @@ export default function ActionSheets({
 
             <button 
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700/80 flex items-center justify-center text-slate-400 hover:text-white"
+              className="w-8 h-8 rounded-full bg-sky-100 hover:bg-sky-200/80 flex items-center justify-center text-sky-700 hover:text-sky-900"
             >
               <X className="w-4 h-4" />
             </button>
@@ -646,8 +706,8 @@ export default function ActionSheets({
           {/* Body Section */}
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {error && (
-              <div className="p-3 bg-red-950/50 border border-red-500/20 rounded-xl text-rose-300 text-xs flex gap-2 items-center">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-rose-700 text-xs flex gap-2 items-center">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
                 <span>{error}</span>
               </div>
             )}
@@ -659,7 +719,7 @@ export default function ActionSheets({
                   <div className="space-y-4">
                     {/* Select from Quick contacts list */}
                     <div>
-                      <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Quick Transfer Recipients</label>
+                      <label className="text-[10px] text-slate-500 font-mono tracking-wider uppercase">Quick Transfer Recipients</label>
                       <div className="flex gap-3 overflow-x-auto py-2.5">
                         {targetUsers.slice(0, 3).map(u => (
                           <button
@@ -671,12 +731,12 @@ export default function ActionSheets({
                             }}
                             className={`flex flex-col items-center shrink-0 min-w-[70px] p-2 rounded-xl transition ${
                               sendTargetUser?.id === u.id 
-                                ? 'bg-cyan-950 border border-cyan-400' 
-                                : 'bg-slate-800/40 border border-white/5 hover:bg-slate-800'
+                                ? 'bg-sky-100 border border-sky-400' 
+                                : 'bg-sky-50/50 border border-sky-100 hover:bg-sky-100/50'
                             }`}
                           >
-                            <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full border border-white/10 shrink-0" />
-                            <span className="text-[10px] font-medium mt-1.5 text-center text-slate-200 truncate max-w-[65px]">{u.name.split(' ')[0]}</span>
+                            <img src={u.avatar} alt={u.name} className="w-10 h-10 rounded-full border border-sky-100 shrink-0" />
+                            <span className="text-[10px] font-medium mt-1.5 text-center text-slate-700 truncate max-w-[65px]">{u.name.split(' ')[0]}</span>
                           </button>
                         ))}
                       </div>
@@ -685,7 +745,7 @@ export default function ActionSheets({
                     {/* Manual inputs */}
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs text-slate-400 font-medium font-mono">Receiver Mobile (11 digits)</label>
+                        <label className="text-xs text-slate-600 font-medium font-mono">Receiver Mobile (11 digits)</label>
                         <input
                           type="tel"
                           maxLength={11}
@@ -697,39 +757,39 @@ export default function ActionSheets({
                             const matched = targetUsers.find(u => u.mobile === e.target.value);
                             setSendTargetUser(matched || null);
                           }}
-                          className="w-full bg-slate-900 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-slate-50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                         />
                         {sendTargetUser && (
-                          <p className="text-[11px] text-cyan-400 mt-1 flex items-center gap-1">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Checked Name: {sendTargetUser.name}
+                          <p className="text-[11px] text-sky-600 mt-1 flex items-center gap-1">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Checked Name: {sendTargetUser.name}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="text-xs text-slate-400 font-medium font-mono">Amount (₱)</label>
+                        <label className="text-xs text-slate-600 font-medium font-mono">Amount (₱)</label>
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm">₱</span>
+                          <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 text-sm">₱</span>
                           <input
                             type="number"
                             placeholder="0.00"
                             value={sendAmount}
                             onChange={(e) => setSendAmount(e.target.value)}
-                            className="w-full text-base font-bold bg-slate-900 border border-white/5 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none"
+                            className="w-full text-base font-bold bg-slate-50 border border-sky-200 rounded-xl pl-8 pr-4 py-3 text-slate-800 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                           />
                         </div>
                         <p className="text-[10px] text-slate-500 mt-1">Available balance: ₱{wallet.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                       </div>
 
                       <div>
-                        <label className="text-xs text-slate-400 font-medium font-mono">Optional Message</label>
+                        <label className="text-xs text-slate-600 font-medium font-mono">Optional Message</label>
                         <input
                           type="text"
                           placeholder="What is this for?"
                           value={sendMessage}
                           maxLength={40}
                           onChange={(e) => setSendMessage(e.target.value)}
-                          className="w-full bg-slate-900 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-slate-50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                         />
                       </div>
                     </div>
@@ -738,7 +798,7 @@ export default function ActionSheets({
                       type="button"
                       onClick={() => setStep(2)}
                       disabled={!sendAmount || (!sendMobile && !sendTargetUser)}
-                      className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer mt-4 disabled:opacity-50"
+                      className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 font-medium text-xs flex items-center justify-center gap-2 cursor-pointer mt-4 disabled:opacity-50 text-white"
                     >
                       Retrieve Verification Summary
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -748,44 +808,44 @@ export default function ActionSheets({
 
                 {step === 2 && (
                   <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-slate-800/40 border border-white/5 space-y-1.5">
-                      <p className="text-xs text-slate-400">Total express send amount</p>
-                      <h4 className="text-3xl font-display font-extrabold text-white">
+                    <div className="text-center p-4 rounded-xl bg-sky-50/70 border border-sky-100 space-y-1.5">
+                      <p className="text-xs text-slate-500">Total express send amount</p>
+                      <h4 className="text-3xl font-display font-extrabold text-slate-850">
                         ₱{parseFloat(sendAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </h4>
-                      <p className="text-[11px] text-cyan-400 font-mono">Fee: ₱0.00 FREE</p>
+                      <p className="text-[11px] text-sky-600 font-mono font-semibold">Fee: ₱0.00 FREE</p>
                     </div>
 
-                    <div className="bg-slate-900 rounded-xl p-3 border border-white/5 space-y-2.5 text-xs">
+                    <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 space-y-2.5 text-xs text-slate-705">
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Recipient Name</span>
-                        <span className="text-white font-medium">{sendTargetUser?.name || 'Unverified Mobile'}</span>
+                        <span className="text-slate-500 font-medium">Recipient Name</span>
+                        <span className="text-slate-800 font-semibold">{sendTargetUser?.name || 'Unverified Mobile'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Mobile Number</span>
-                        <span className="text-white font-mono">{sendMobile}</span>
+                        <span className="text-slate-500 font-medium">Mobile Number</span>
+                        <span className="text-slate-800 font-mono">{sendMobile}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Remarks</span>
-                        <span className="text-white italic shrink-0 max-w-[200px] truncate">{sendMessage || 'n/a'}</span>
+                        <span className="text-slate-500 font-medium">Remarks</span>
+                        <span className="text-slate-800 italic shrink-0 max-w-[200px] truncate">{sendMessage || 'n/a'}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Source Account</span>
-                        <span className="text-white">Jcash Wallet</span>
+                        <span className="text-slate-500 font-medium">Source Account</span>
+                        <span className="text-slate-800">Jcash Wallet</span>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-3">
                       <button 
                         onClick={() => setStep(1)} 
-                        className="flex-1 py-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl"
+                        className="flex-1 py-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl"
                       >
                         Modify Details
                       </button>
                       <button 
                         onClick={triggerSendMoney} 
                         disabled={loading}
-                        className="flex-1 py-3 text-xs bg-gradient-to-r from-blue-600 to-cyan-500 hover:opacity-90 font-bold text-white rounded-xl flex items-center justify-center gap-1.5"
+                        className="flex-1 py-3 text-xs bg-gradient-to-r from-blue-600 to-sky-500 hover:opacity-90 font-bold text-white rounded-xl flex items-center justify-center gap-1.5"
                       >
                         {loading ? 'Sending...' : 'Confirm & Transfer'}
                         <ShieldCheck className="w-4 h-4" />
@@ -799,7 +859,7 @@ export default function ActionSheets({
             {/* B. RECEIVE MONEY QR DISPLAY */}
             {type === 'receive' && (
               <div className="space-y-5 text-center">
-                <div className="p-4 bg-white rounded-2xl w-52 h-52 mx-auto flex flex-col items-center justify-center shadow-lg relative">
+                <div className="p-4 bg-white rounded-2xl w-52 h-52 mx-auto flex flex-col items-center justify-center shadow-lg relative border border-sky-100 bg-gradient-to-b from-sky-50/50 to-white">
                   {/* Real responsive vector mockup representation of a GCash/Jcash QR */}
                   <div className="grid grid-cols-5 grid-rows-5 gap-1.5 w-40 h-40 opacity-90 p-1 bg-white">
                     {[...Array(25)].map((_, idx) => (
@@ -807,38 +867,38 @@ export default function ActionSheets({
                         key={idx} 
                         className={`rounded-[2px] ${
                           idx % 3 === 0 || idx % 7 === 0 || idx % 11 === 0 || idx < 5 || idx === 19 || idx === 24
-                            ? 'bg-slate-900' 
+                            ? 'bg-slate-800' 
                             : 'bg-slate-200'
                         }`} 
                       />
                     ))}
                   </div>
                   {/* Brand Center Logo inside QR */}
-                  <div className="absolute top-[41%] left-[41%] w-10 h-10 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg flex items-center justify-center border-2 border-white text-white font-display font-extrabold text-sm">
+                  <div className="absolute top-[41%] left-[41%] w-10 h-10 bg-gradient-to-r from-blue-600 to-sky-500 rounded-lg flex items-center justify-center border-2 border-white text-white font-display font-extrabold text-sm">
                     J
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="text-sm font-semibold text-white">{currentUser.name}</h4>
-                  <p className="text-xs text-slate-400 font-mono">{currentUser.mobile}</p>
+                  <h4 className="text-sm font-semibold text-slate-800">{currentUser.name}</h4>
+                  <p className="text-xs text-slate-500 font-mono">{currentUser.mobile}</p>
                 </div>
 
                 {/* Input request amount generator */}
                 <div className="max-w-[250px] mx-auto space-y-2">
-                  <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Request customized Amount (₱)</label>
+                  <label className="text-[10px] text-slate-500 font-mono tracking-wider uppercase font-semibold">Request customized Amount (₱)</label>
                   <input
                     type="number"
                     placeholder="0.00 (optional)"
                     value={receiveRequestAmount}
                     onChange={(e) => setReceiveRequestAmount(e.target.value)}
-                    className="w-full text-center bg-slate-900 border border-white/5 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none"
+                    className="w-full text-center bg-slate-50 border border-sky-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-sky-500"
                   />
                   {receiveRequestAmount && (
                     <motion.div 
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="p-2 rounded-lg bg-cyan-950/40 border border-cyan-800/30 text-cyan-400 text-[11px] font-medium"
+                      className="p-2 rounded-lg bg-sky-50 border border-sky-100 text-sky-600 text-[11px] font-medium"
                     >
                       QR requests to transfer precisely ₱{parseFloat(receiveRequestAmount).toLocaleString()}
                     </motion.div>
@@ -851,7 +911,7 @@ export default function ActionSheets({
                       navigator.clipboard.writeText(`jcash://transfer?mobile=${currentUser.mobile}&amount=${receiveRequestAmount}`);
                       alert('📋 Mock QR Code connection link copied to your clipboard!');
                     }}
-                    className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-xl flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-700 hover:text-sky-850 text-xs rounded-xl flex items-center justify-center gap-1.5 font-semibold cursor-pointer"
                   >
                     <Copy className="w-3.5 h-3.5" /> Copy Transfer Payload Link
                   </button>
@@ -866,25 +926,70 @@ export default function ActionSheets({
                   <div className="space-y-4">
                     {/* Visual simulated viewfinder */}
                     {qrScanning ? (
-                      <div className="relative aspect-[4/3] w-full rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden flex flex-col justify-center items-center">
-                        <div className="absolute inset-0 bg-slate-950/80 mix-blend-overlay flex flex-col items-center justify-center">
-                          {/* Laser effect */}
-                          <div className="w-52 h-[1px] bg-cyan-400 absolute animate-[ping_1.5s_infinite] shadow-[0_0_8px_cyan]" />
-                          {/* Viewer corners */}
-                          <div className="w-48 h-48 border-2 border-dashed border-cyan-500/50 rounded-xl relative flex flex-col justify-center items-center text-center p-2">
-                            <span className="text-[10px] text-cyan-400 font-mono tracking-wide uppercase">CAMERA SCANNING ACTIVE</span>
+                      <div className="space-y-3">
+                        <div 
+                          onClick={runSimulatedScan}
+                          className="relative aspect-[4/3] w-full rounded-2xl bg-slate-900 border-2 border-sky-200 overflow-hidden flex flex-col justify-center items-center cursor-pointer group hover:border-sky-300 transition"
+                        >
+                          {/* Outer absolute scan framing overlay */}
+                          <div className="absolute inset-0 bg-slate-900/40 mix-blend-overlay flex flex-col items-center justify-center">
+                            {/* Sweeping scan laser bar */}
+                            <div className={`w-11/12 h-[2px] bg-sky-400 absolute left-4 right-4 ${scanStatus === 'scanning' ? 'animate-bounce' : 'animate-pulse'} shadow-[0_0_10px_rgba(56,189,248,0.8)]`} style={{ top: scanStatus === 'scanning' ? undefined : '50%' }} />
+                            
+                            {/* Dynamic scanning progress layout overlay */}
+                            <div className="w-48 h-48 border-2 border-dashed border-sky-400/40 rounded-xl relative flex flex-col justify-center items-center text-center p-3">
+                              {scanStatus === 'scanning' ? (
+                                <div className="space-y-2">
+                                  <span className="text-[12px] font-mono text-sky-400 font-extrabold block animate-pulse">DECODING: {scanProgress}%</span>
+                                  <div className="w-32 bg-sky-950/80 rounded-full h-1.5 overflow-hidden mx-auto border border-sky-800/30">
+                                    <div className="bg-sky-450 bg-sky-400 h-full transition-all duration-150" style={{ width: `${scanProgress}%` }} />
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="space-y-1">
+                                  <span className="text-[10px] text-sky-400 font-mono tracking-wide uppercase font-semibold">CAMERA EYE ACTIVE</span>
+                                  <span className="text-[9px] text-slate-400 block mt-1 font-sans">Tap Frame to Auto-Scan</span>
+                                </div>
+                              )}
+                            </div>
                           </div>
+
+                          <Compass className={`w-12 h-12 text-sky-400 ${scanStatus === 'scanning' ? 'animate-spin' : 'opacity-20'}`} />
+                          
+                          {/* Live Dynamic Status Labels */}
+                          <p className="text-[10px] text-sky-300 mt-2 font-mono z-10 px-4 text-center">
+                            {scanStatus === 'scanning' ? (
+                              scanProgress < 30 ? "📷 Aligning Jcash camera lens focus..." :
+                              scanProgress < 70 ? "🎯 Spotting matrix barcodes & patterns..." :
+                              "🧩 Resolving certified merchants ledger..."
+                            ) : (
+                              "Aim camera at merchant QR code, or click to scan"
+                            )}
+                          </p>
                         </div>
-                        <Compass className="w-12 h-12 text-cyan-400 animate-spin opacity-20" />
-                        <p className="text-[10px] text-slate-500 mt-2">Aim camera at e-Bill or merchant QR terminal</p>
+
+                        {/* Interactive scan action button */}
+                        <button
+                          type="button"
+                          onClick={runSimulatedScan}
+                          disabled={scanStatus === 'scanning'}
+                          className={`w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 border transition cursor-pointer ${
+                            scanStatus === 'scanning'
+                              ? 'bg-sky-50 text-sky-400 border-sky-100'
+                              : 'bg-gradient-to-r from-sky-600 to-blue-500 text-white border-transparent hover:from-sky-550 hover:to-blue-550 shadow-md shadow-sky-605 shadow-sky-600/15'
+                          }`}
+                        >
+                          <QrCode className="w-4 h-4 shrink-0" />
+                          {scanStatus === 'scanning' ? `Processing QR Decryption (${scanProgress}%)` : `⚡ Simulate Barcode/QR scan`}
+                        </button>
                       </div>
                     ) : null}
 
                     {/* Quick Merchant Selection mock UI */}
                     <div>
                       <div className="flex justify-between items-center mb-1.5">
-                        <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Select local Jcash Merchant Terminal</label>
-                        <button onClick={() => setQrScanning(!qrScanning)} className="text-[10px] text-cyan-400">
+                        <label className="text-[10px] text-slate-500 font-mono tracking-wider uppercase font-semibold">Select local Jcash Merchant Terminal</label>
+                        <button onClick={() => setQrScanning(!qrScanning)} className="text-[10px] text-sky-600 font-semibold hover:text-sky-700">
                           {qrScanning ? 'Manual Terminal List' : 'Enable Scanner Viewfinder'}
                         </button>
                       </div>
@@ -898,14 +1003,14 @@ export default function ActionSheets({
                               setQrSelectedMerchant(m);
                               setQrScanning(false);
                             }}
-                            className={`p-3 rounded-xl border text-left transition ${
+                            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
                               qrSelectedMerchant?.id === m.id
-                                ? 'bg-cyan-950 border-cyan-500'
-                                : 'bg-slate-800/40 border-white/5 hover:bg-slate-800'
+                                ? 'bg-sky-100 border-sky-400'
+                                : 'bg-sky-50/50 border-sky-100 hover:bg-sky-100/50'
                             }`}
                           >
-                            <h5 className="text-[11px] font-bold text-white truncate">{m.name}</h5>
-                            <p className="text-[9px] text-slate-400 mt-0.5">{m.category}</p>
+                            <h5 className="text-[11px] font-bold text-slate-800 truncate">{m.name}</h5>
+                            <p className="text-[9px] text-slate-500 mt-0.5">{m.category}</p>
                           </button>
                         ))}
                       </div>
@@ -917,34 +1022,34 @@ export default function ActionSheets({
                         animate={{ opacity: 1, y: 0 }}
                         className="space-y-3"
                       >
-                        <div className="p-3.5 rounded-xl bg-slate-900 border border-white/5 flex justify-between items-center text-xs">
+                        <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-100 flex justify-between items-center text-xs">
                           <div>
-                            <span className="text-slate-400 text-[10px] uppercase font-mono">Paying Merchant</span>
-                            <h4 className="text-white font-bold">{qrSelectedMerchant.name}</h4>
+                            <span className="text-slate-500 text-[10px] uppercase font-mono font-medium">Paying Merchant</span>
+                            <h4 className="text-slate-850 font-bold">{qrSelectedMerchant.name}</h4>
                           </div>
-                          <span className="text-[10px] text-emerald-400 bg-emerald-950/50 border border-emerald-800/30 px-2 py-0.5 rounded-full">QR Verified</span>
+                          <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">QR Verified</span>
                         </div>
 
                         <div>
-                          <label className="text-xs text-slate-400 font-medium font-mono">Bill Amount (₱)</label>
+                          <label className="text-xs text-slate-600 font-medium font-mono">Bill Amount (₱)</label>
                           <div className="relative">
-                            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm">₱</span>
+                            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 text-sm">₱</span>
                             <input
                               type="number"
                               placeholder="0.00"
                               value={qrAmount}
                               onChange={(e) => setQrAmount(e.target.value)}
-                              className="w-full text-base font-bold bg-slate-900 border border-white/5 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none"
+                              className="w-full text-base font-bold bg-slate-50 border border-sky-200 rounded-xl pl-8 pr-4 py-3 text-slate-800 focus:outline-none focus:border-sky-500"
                             />
                           </div>
-                          <p className="text-[10px] text-slate-400 mt-1">Wallet balance: ₱{wallet.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                          <p className="text-[10px] text-slate-500 mt-1">Wallet balance: ₱{wallet.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                         </div>
 
                         <button
                           type="button"
                           onClick={() => setStep(2)}
                           disabled={!qrAmount || parseFloat(qrAmount) <= 0}
-                          className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                          className="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-500 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer text-white"
                         >
                           Confirm Merchant Price Checkout
                         </button>
@@ -955,37 +1060,37 @@ export default function ActionSheets({
 
                 {step === 2 && qrSelectedMerchant && (
                   <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-slate-800/40 border border-white/5 space-y-1.5">
-                      <p className="text-xs text-slate-400">Paying Out Jcash QR Code</p>
-                      <h4 className="text-3xl font-display font-extrabold text-white">
+                    <div className="text-center p-4 rounded-xl bg-sky-50/75 border border-sky-100 space-y-1.5">
+                      <p className="text-xs text-slate-500">Paying Out Jcash QR Code</p>
+                      <h4 className="text-3xl font-display font-extrabold text-slate-850">
                         ₱{parseFloat(qrAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </h4>
-                      <p className="text-[10px] text-cyan-400 font-mono">SECURE ZERO-FEE NFC TRANSIT</p>
+                      <p className="text-[10px] text-sky-600 font-mono font-semibold uppercase">SECURE ZERO-FEE NFC TRANSIT</p>
                     </div>
 
-                    <div className="bg-slate-900 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
+                    <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 space-y-2 text-xs text-slate-700">
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Checkout Shop</span>
-                        <span className="text-white font-medium">{qrSelectedMerchant.name}</span>
+                        <span className="text-slate-500">Checkout Shop</span>
+                        <span className="text-slate-800 font-medium">{qrSelectedMerchant.name}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Category Tag</span>
-                        <span className="text-white font-mono">{qrSelectedMerchant.category}</span>
+                        <span className="text-slate-500">Category Tag</span>
+                        <span className="text-slate-850 font-mono">{qrSelectedMerchant.category}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Source account</span>
-                        <span className="text-white">Jcash Digital Wallet</span>
+                        <span className="text-slate-500">Source account</span>
+                        <span className="text-slate-800">Jcash Digital Wallet</span>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl">
+                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl cursor-pointer">
                         Cancel/Scan Again
                       </button>
                       <button 
                         onClick={triggerQRPay} 
                         disabled={loading}
-                        className="flex-1 py-3 text-xs bg-cyan-500 hover:bg-cyan-400 font-bold text-white rounded-xl flex items-center justify-center gap-1.5"
+                        className="flex-1 py-3 text-xs bg-cyan-600 hover:bg-cyan-500 font-bold text-white rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
                       >
                         {loading ? 'Authorizing...' : 'Settle Payment Now'}
                       </button>
@@ -1002,45 +1107,45 @@ export default function ActionSheets({
                   <div className="space-y-4">
                     {!cashInMethod ? (
                       <div className="space-y-3">
-                        <label className="text-[10px] text-[10px] text-slate-400 font-mono tracking-wider uppercase">Select Preferred Wallet Funding Channel</label>
+                        <label className="text-[10px] text-slate-500 font-mono tracking-wider uppercase font-semibold">Select Preferred Wallet Funding Channel</label>
                         
                         <button
                           onClick={() => setCashInMethod('bank')}
-                          className="w-full p-4 rounded-xl bg-slate-800/40 border border-white/5 hover:bg-slate-800 text-left flex items-center justify-between"
+                          className="w-full p-4 rounded-xl bg-sky-50/55 border border-sky-100 hover:bg-sky-100/50 text-left flex items-center justify-between cursor-pointer transition"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-indigo-950/80 border border-indigo-800/40 flex items-center justify-center text-indigo-400">
+                            <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
                               <BankIcon className="w-5 h-5" />
                             </div>
                             <div>
-                              <h5 className="text-xs font-semibold text-white">Linked Bank Accounts</h5>
-                              <p className="text-[10px] text-slate-400">BPI, BDO, UnionBank. Instant settlement.</p>
+                              <h5 className="text-xs font-semibold text-slate-800">Linked Bank Accounts</h5>
+                              <p className="text-[10px] text-slate-500">BPI, BDO, UnionBank. Instant settlement.</p>
                             </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-slate-500" />
+                          <ChevronRight className="w-4 h-4 text-slate-400" />
                         </button>
 
                         <button
                           onClick={() => setCashInMethod('overthecounter')}
-                          className="w-full p-4 rounded-xl bg-slate-800/40 border border-white/5 hover:bg-slate-800 text-left flex items-center justify-between"
+                          className="w-full p-4 rounded-xl bg-sky-50/55 border border-sky-100 hover:bg-sky-100/50 text-left flex items-center justify-between cursor-pointer transition"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-teal-950/80 border border-teal-800/40 flex items-center justify-center text-teal-400">
+                            <div className="w-10 h-10 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600">
                               <Smartphone className="w-5 h-5" />
                             </div>
                             <div>
-                              <h5 className="text-xs font-semibold text-white">Over-The-Counter Cash Desk</h5>
-                              <p className="text-[10px] text-slate-400">7-Eleven Barcode, Pawnshops, Palawan.</p>
+                              <h5 className="text-xs font-semibold text-slate-800">Over-The-Counter Cash Desk</h5>
+                              <p className="text-[10px] text-slate-500">7-Eleven Barcode, Pawnshops, Palawan.</p>
                             </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-slate-500" />
+                          <ChevronRight className="w-4 h-4 text-slate-400" />
                         </button>
                       </div>
                     ) : cashInMethod === 'bank' ? (
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <label className="text-xs text-slate-400 font-medium">Select Linked Partner Bank</label>
-                          <button onClick={() => setCashInMethod(null)} className="text-[11px] text-cyan-400 hover:underline">Change Method</button>
+                          <label className="text-xs text-slate-500 font-semibold font-mono uppercase tracking-wider">Select Linked Partner Bank</label>
+                          <button onClick={() => setCashInMethod(null)} className="text-[11px] text-sky-600 hover:underline cursor-pointer font-semibold">Change Method</button>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
@@ -1049,10 +1154,10 @@ export default function ActionSheets({
                               key={bank}
                               type="button"
                               onClick={() => setCashInBankCode(bank)}
-                              className={`py-2 px-3 text-xs font-bold rounded-xl border ${
+                              className={`py-2 px-3 text-xs font-bold rounded-xl border cursor-pointer transition ${
                                 cashInBankCode === bank
-                                  ? 'bg-emerald-950 border-emerald-500 text-emerald-400'
-                                  : 'bg-slate-800/80 border-white/5 hover:bg-slate-800 text-slate-300'
+                                  ? 'bg-sky-100 border-sky-400 text-sky-700'
+                                  : 'bg-slate-50 border-sky-200 hover:bg-slate-100 text-slate-600'
                               }`}
                             >
                               {bank}
@@ -1061,7 +1166,7 @@ export default function ActionSheets({
                         </div>
 
                         <div>
-                          <label className="text-xs text-slate-400 font-medium font-mono">Amount to Add (₱)</label>
+                          <label className="text-xs text-slate-600 font-medium font-mono">Amount to Add (₱)</label>
                           <div className="relative">
                             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm">₱</span>
                             <input
@@ -1069,7 +1174,7 @@ export default function ActionSheets({
                               placeholder="0.00"
                               value={cashInAmount}
                               onChange={(e) => setCashInAmount(e.target.value)}
-                              className="w-full text-base font-bold bg-slate-900 border border-white/5 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none"
+                              className="w-full text-base font-bold bg-slate-50 border border-sky-200 rounded-xl pl-8 pr-4 py-3 text-slate-800 focus:outline-none"
                             />
                           </div>
                         </div>
@@ -1078,44 +1183,44 @@ export default function ActionSheets({
                           type="button"
                           onClick={() => setStep(2)}
                           disabled={!cashInAmount || parseFloat(cashInAmount) <= 0}
-                          className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 font-bold text-xs flex items-center justify-center gap-1 text-white cursor-pointer hover:opacity-95"
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-sky-500 font-bold text-xs flex items-center justify-center gap-1 text-white cursor-pointer hover:opacity-95"
                         >
                           Review Cash In Fund
                         </button>
                       </div>
                     ) : (
                       // 7-Eleven QR Barcode generator
-                      <div className="space-y-4 text-center">
-                        <div className="p-4 bg-white rounded-xl max-w-[200px] mx-auto">
+                      <div className="space-y-4 text-center pb-2">
+                        <div className="p-4 bg-white rounded-xl max-w-[200px] mx-auto border border-sky-100 shadow-sm">
                           {/* Simulated Barcode */}
                           <div className="flex flex-col items-center gap-1.5 p-1 bg-white">
                             <div className="h-20 w-44 bg-[repeating-linear-gradient(90deg,#0f172a,#0f172a_4px,#ffffff_4px,#ffffff_10px)]" />
-                            <span className="font-mono text-[9px] text-slate-800 tracking-widest font-bold">7770194857210</span>
+                            <span className="font-mono text-[9px] text-slate-800 tracking-widest font-bold font-mono">7770194857210</span>
                           </div>
                         </div>
 
-                        <div className="text-xs text-slate-300 max-w-[300px] mx-auto">
-                          Please present this barcode to any <span className="font-semibold text-emerald-400">7-Eleven CLiQQ Machine</span> cashier. Pay the corresponding amount to load cash instantly.
+                        <div className="text-xs text-slate-600 max-w-[300px] mx-auto leading-relaxed">
+                          Please present this barcode to any <span className="font-semibold text-emerald-600">7-Eleven CLiQQ Machine</span> cashier. Pay the corresponding amount to load cash instantly.
                         </div>
 
                         <div>
-                          <label className="text-xs text-slate-400 font-medium font-mono">Enter Loaded Amount for Simulation (₱)</label>
+                          <label className="text-xs text-slate-600 font-medium font-mono">Enter Loaded Amount for Simulation (₱)</label>
                           <input
                             type="number"
                             required
                             placeholder="e.g. 1000"
                             value={cashInAmount}
                             onChange={(e) => setCashInAmount(e.target.value)}
-                            className="w-full text-center text-sm font-bold bg-slate-900 border border-white/5 rounded-xl px-4 py-2.5 text-white focus:outline-none"
+                            className="w-full text-center text-sm font-bold bg-slate-50 border border-sky-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none"
                           />
                         </div>
 
                         <div className="flex gap-2">
-                          <button onClick={() => setCashInMethod(null)} className="flex-1 py-2.5 text-xs text-slate-400 hover:text-white bg-slate-800 rounded-xl">Back</button>
+                          <button onClick={() => setCashInMethod(null)} className="flex-1 py-2.5 text-xs text-slate-500 hover:text-slate-800 bg-slate-100 rounded-xl cursor-pointer">Back</button>
                           <button 
                             onClick={triggerCashIn} 
                             disabled={!cashInAmount}
-                            className="flex-1 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl"
+                            className="flex-1 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl cursor-pointer"
                           >
                             Simulate OTC Cashier Payment
                           </button>
@@ -1127,37 +1232,37 @@ export default function ActionSheets({
 
                 {step === 2 && (
                   <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-slate-800/40 border border-white/5 space-y-1.5">
-                      <p className="text-xs text-slate-400">Wallet Funding Value</p>
-                      <h4 className="text-3xl font-display font-extrabold text-white">
+                    <div className="text-center p-4 rounded-xl bg-sky-50 border border-sky-100 space-y-1.5">
+                      <p className="text-xs text-slate-500">Wallet Funding Value</p>
+                      <h4 className="text-3xl font-display font-extrabold text-slate-850">
                         ₱{parseFloat(cashInAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </h4>
-                      <p className="text-[10px] text-emerald-400 font-mono">No Convenience charges applied</p>
+                      <p className="text-[10px] text-emerald-600 font-mono font-semibold">No Convenience charges applied</p>
                     </div>
 
-                    <div className="bg-slate-900 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
+                    <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 space-y-2 text-xs text-slate-700">
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Transfer Channel</span>
-                        <span className="text-white font-medium">{cashInBankCode} Linked account</span>
+                        <span className="text-slate-500 font-medium">Transfer Channel</span>
+                        <span className="text-slate-850 font-semibold">{cashInBankCode} Linked account</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Payment recipient</span>
-                        <span className="text-white">{currentUser.name} (Myself)</span>
+                        <span className="text-slate-500 font-medium">Payment recipient</span>
+                        <span className="text-slate-800 font-semibold">{currentUser.name} (Myself)</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Destination</span>
-                        <span className="text-white">Available Balance</span>
+                        <span className="text-slate-500 font-medium">Destination</span>
+                        <span className="text-slate-800 font-semibold">Available Balance</span>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl">
+                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl cursor-pointer">
                         Cancel
                       </button>
                       <button 
                         onClick={triggerCashIn} 
                         disabled={loading}
-                        className="flex-1 py-3 text-xs bg-emerald-500 hover:bg-emerald-400 font-bold text-white rounded-xl flex items-center justify-center gap-1"
+                        className="flex-1 py-3 text-xs bg-emerald-600 hover:bg-emerald-500 font-bold text-white rounded-xl flex items-center justify-center gap-1 cursor-pointer"
                       >
                         {loading ? 'Processing...' : 'Authorize Transaction'}
                       </button>
@@ -1186,37 +1291,37 @@ export default function ActionSheets({
                             setBillCategory(billType.key);
                             setBillerName(billType.biller);
                           }}
-                          className={`p-2.5 rounded-xl border text-center flex flex-col items-center justify-center transition shrink-0 ${
+                          className={`p-2.5 rounded-xl border text-center flex flex-col items-center justify-center transition shrink-0 cursor-pointer ${
                             billCategory === billType.key
-                              ? 'bg-amber-950/60 border-amber-500 text-amber-400'
-                              : 'bg-slate-850 border-white/5 hover:bg-slate-800 text-slate-300'
+                              ? 'bg-amber-50 border-amber-400 text-amber-700 font-bold'
+                              : 'bg-slate-50 border-sky-150 border-sky-100 hover:bg-sky-50 text-slate-600'
                           }`}
                         >
                           <span className="text-lg mb-1">{billType.icon}</span>
-                          <span className="text-[9px] font-medium leading-none text-center truncate w-full">{billType.key}</span>
+                          <span className="text-[9px] font-semibold leading-none text-center truncate w-full">{billType.key}</span>
                         </button>
                       ))}
                     </div>
 
                     <div className="space-y-3.5 pt-1">
-                      <div className="p-3 bg-slate-900 border border-white/5 rounded-xl flex items-center justify-between text-xs">
-                        <span className="text-slate-400">Selected Utility Biller</span>
-                        <span className="text-white font-bold">{billerName}</span>
+                      <div className="p-3 bg-sky-50 border border-sky-100 rounded-xl flex items-center justify-between text-xs">
+                        <span className="text-slate-500 font-medium">Selected Utility Biller</span>
+                        <span className="text-slate-800 font-bold">{billerName}</span>
                       </div>
 
                       <div>
-                        <label className="text-xs text-slate-400 font-medium font-mono">Biller Reference / Card Number</label>
+                        <label className="text-xs text-slate-600 font-medium font-mono">Biller Reference / Card Number</label>
                         <input
                           type="text"
                           placeholder="e.g. 02938475810237"
                           value={billAcctNo}
                           onChange={(e) => setBillAcctNo(e.target.value.replace(/\D/g, ''))}
-                          className="w-full bg-slate-900 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-slate-50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-sky-500"
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs text-slate-400 font-medium font-mono">Billing Amount (₱)</label>
+                        <label className="text-xs text-slate-600 font-medium font-mono">Billing Amount (₱)</label>
                         <div className="relative">
                           <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm">₱</span>
                           <input
@@ -1224,7 +1329,7 @@ export default function ActionSheets({
                             placeholder="0.00"
                             value={billAmount}
                             onChange={(e) => setBillAmount(e.target.value)}
-                            className="w-full text-base font-bold bg-slate-900 border border-white/5 rounded-xl pl-8 pr-4 py-3 text-white focus:outline-none"
+                            className="w-full text-base font-bold bg-slate-50 border border-sky-200 rounded-xl pl-8 pr-4 py-3 text-slate-800 focus:outline-none focus:border-sky-500"
                           />
                         </div>
                         <p className="text-[10px] text-slate-500 mt-1">Wallet balance: ₱{wallet.balance.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
@@ -1244,37 +1349,37 @@ export default function ActionSheets({
 
                 {step === 2 && (
                   <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-slate-800/40 border border-white/5 space-y-1.5">
-                      <p className="text-xs text-slate-400">Total Bill settlement cost</p>
-                      <h4 className="text-3xl font-display font-extrabold text-white">
+                    <div className="text-center p-4 rounded-xl bg-sky-50 border border-sky-100 space-y-1.5">
+                      <p className="text-xs text-slate-500">Total Bill settlement cost</p>
+                      <h4 className="text-3xl font-display font-extrabold text-slate-850">
                         ₱{parseFloat(billAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}
                       </h4>
-                      <p className="text-[10px] text-amber-500 font-mono">Instant reference certification provided</p>
+                      <p className="text-[10px] text-amber-600 font-mono font-semibold">Instant reference certification provided</p>
                     </div>
 
-                    <div className="bg-slate-900 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
+                    <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 space-y-2 text-xs text-slate-705">
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Utility Provider</span>
-                        <span className="text-white font-medium">{billerName}</span>
+                        <span className="text-slate-500">Utility Provider</span>
+                        <span className="text-slate-800 font-medium">{billerName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Account No. / Card ID</span>
-                        <span className="text-white font-mono">{billAcctNo}</span>
+                        <span className="text-slate-500">Account No. / Card ID</span>
+                        <span className="text-slate-855 font-mono">{billAcctNo}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Channel fee</span>
-                        <span className="text-white text-emerald-400 font-bold">₱0.00 FREE</span>
+                        <span className="text-slate-500">Channel fee</span>
+                        <span className="text-emerald-600 font-bold">₱0.00 FREE</span>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl">
+                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl cursor-pointer">
                         Modify
                       </button>
                       <button 
                         onClick={triggerBillsPayment} 
                         disabled={loading}
-                        className="flex-1 py-3 text-xs bg-amber-500 hover:bg-amber-400 font-bold text-slate-950 rounded-xl flex items-center justify-center gap-1"
+                        className="flex-1 py-3 text-xs bg-amber-500 hover:bg-amber-400 font-bold text-white rounded-xl flex items-center justify-center gap-1 cursor-pointer"
                       >
                         {loading ? 'Settling bill...' : 'Settle Bill Now'}
                       </button>
@@ -1291,7 +1396,7 @@ export default function ActionSheets({
                   <div className="space-y-4">
                     {/* Select Network */}
                     <div>
-                      <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Select Carrier Network</label>
+                      <label className="text-[10px] text-slate-500 font-semibold font-mono tracking-wider uppercase">Select Carrier Network</label>
                       <div className="grid grid-cols-4 gap-2 py-1.5">
                         {['Globe', 'Smart', 'TNT', 'DITO'].map(net => (
                           <button
@@ -1301,10 +1406,10 @@ export default function ActionSheets({
                               setLoadNetwork(net as any);
                               setLoadPromo(null);
                             }}
-                            className={`py-2 px-1 text-xs font-bold rounded-xl border text-center transition ${
+                            className={`py-2 px-1 text-xs font-bold rounded-xl border text-center transition cursor-pointer ${
                               loadNetwork === net
-                                ? 'bg-pink-950 border-pink-500 text-pink-400'
-                                : 'bg-slate-800/80 border-white/5 hover:bg-slate-800 text-slate-300'
+                                ? 'bg-pink-100 border-pink-400 text-pink-700'
+                                : 'bg-slate-50 border-sky-100 hover:bg-slate-100 text-slate-600'
                             }`}
                           >
                             {net}
@@ -1315,36 +1420,36 @@ export default function ActionSheets({
 
                     {/* Mobile Input */}
                     <div>
-                      <label className="text-xs text-slate-400 font-medium font-mono">Prepaid Subscriber Mobile (11 digits)</label>
+                      <label className="text-xs text-slate-600 font-semibold font-mono">Prepaid Subscriber Mobile (11 digits)</label>
                       <input
                         type="tel"
                         maxLength={11}
                         value={loadMobile}
                         onChange={(e) => setLoadMobile(e.target.value.replace(/\D/g, ''))}
-                        className="w-full bg-slate-900 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                        className="w-full bg-slate-50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-sky-500"
                       />
                     </div>
 
                     {/* Promos Offer Menu */}
                     <div>
-                      <label className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Choose Carrier Promo Package</label>
+                      <label className="text-[10px] text-slate-555 text-slate-500 font-semibold font-mono tracking-wider uppercase">Choose Carrier Promo Package</label>
                       <div className="space-y-2 mt-1.5 max-h-[170px] overflow-y-auto pr-1">
                         {promosCollection[loadNetwork].map(promo => (
                           <button
                             key={promo.id}
                             type="button"
                             onClick={() => setLoadPromo(promo)}
-                            className={`w-full p-2.5 rounded-xl border text-left flex items-start justify-between transition ${
+                            className={`w-full p-2.5 rounded-xl border text-left flex items-start justify-between transition cursor-pointer ${
                               loadPromo?.id === promo.id
-                                ? 'bg-pink-950 border-pink-500'
-                                : 'bg-slate-800/40 border-white/5 hover:bg-slate-850'
+                                ? 'bg-pink-50 border-pink-400'
+                                : 'bg-slate-50/50 border-sky-100 hover:bg-sky-50'
                             }`}
                           >
                             <div className="max-w-[70%]">
-                              <h5 className="text-xs font-bold text-white">{promo.name}</h5>
-                              <p className="text-[9px] text-slate-400 leading-tight mt-0.5">{promo.description}</p>
+                              <h5 className="text-xs font-bold text-slate-800">{promo.name}</h5>
+                              <p className="text-[9px] text-slate-500 leading-tight mt-0.5">{promo.description}</p>
                             </div>
-                            <span className="text-xs font-mono font-bold text-pink-400">₱{promo.price}.00</span>
+                            <span className="text-xs font-mono font-bold text-pink-600">₱{promo.price}.00</span>
                           </button>
                         ))}
                       </div>
@@ -1363,37 +1468,37 @@ export default function ActionSheets({
 
                 {step === 2 && loadPromo && (
                   <div className="space-y-4">
-                    <div className="text-center p-4 rounded-xl bg-slate-800/40 border border-white/5 space-y-1.5">
-                      <p className="text-xs text-slate-400">Purchasing Carrier Data Load</p>
-                      <h4 className="text-3xl font-display font-extrabold text-white">
+                    <div className="text-center p-4 rounded-xl bg-sky-50 border border-sky-100 space-y-1.5">
+                      <p className="text-xs text-slate-500 font-medium">Purchasing Carrier Data Load</p>
+                      <h4 className="text-3xl font-display font-extrabold text-slate-800">
                         ₱{loadPromo.price}.00
                       </h4>
-                      <p className="text-[10px] text-pink-400 font-mono">{loadNetwork} e-Rebate: +{Math.floor(loadPromo.price * 0.1)} Points</p>
+                      <p className="text-[10px] text-pink-600 font-mono font-semibold">{loadNetwork} e-Rebate: +{Math.floor(loadPromo.price * 0.1)} Points</p>
                     </div>
 
-                    <div className="bg-slate-900 rounded-xl p-3 border border-white/5 space-y-2 text-xs">
+                    <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 space-y-2 text-xs text-slate-700">
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Carrier Network</span>
-                        <span className="text-white font-medium">{loadNetwork}</span>
+                        <span className="text-slate-500 font-medium">Carrier Network</span>
+                        <span className="text-slate-850 font-semibold">{loadNetwork}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Offer Promo Type</span>
-                        <span className="text-white font-bold">{loadPromo.name}</span>
+                        <span className="text-slate-500 font-medium font-semibold">Offer Promo Type</span>
+                        <span className="text-pink-600 font-bold">{loadPromo.name}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Subscriber Line</span>
-                        <span className="text-white font-mono">{loadMobile}</span>
+                        <span className="text-slate-500 font-medium">Subscriber Line</span>
+                        <span className="text-slate-800 font-mono">{loadMobile}</span>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-3">
-                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl">
+                      <button onClick={() => setStep(1)} className="flex-1 py-3 text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl cursor-pointer">
                         Modify
                       </button>
                       <button 
                         onClick={triggerMobileLoad} 
                         disabled={loading}
-                        className="flex-1 py-3 text-xs bg-pink-500 hover:bg-pink-400 font-bold text-slate-950 rounded-xl flex items-center justify-center gap-1"
+                        className="flex-1 py-3 text-xs bg-pink-600 hover:bg-pink-500 font-bold text-white rounded-xl flex items-center justify-center gap-1 cursor-pointer"
                       >
                         {loading ? 'Processing PIN...' : 'Confirm Load Buy'}
                       </button>
@@ -1410,33 +1515,33 @@ export default function ActionSheets({
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center py-6 space-y-5"
               >
-                <div className="w-16 h-16 rounded-full bg-emerald-950/80 border border-emerald-500/50 flex items-center justify-center mx-auto text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
                   <CheckCircle2 className="w-10 h-10 animate-[bounce_1s]" />
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="text-xl font-display font-extrabold text-white">Transaction Success!</h4>
-                  <p className="text-xs text-slate-400">The amount has been successfully credited instantly.</p>
+                  <h4 className="text-xl font-display font-extrabold text-slate-800">Transaction Success!</h4>
+                  <p className="text-xs text-slate-500">The amount has been successfully credited instantly.</p>
                 </div>
 
                 {/* Voucher Receipt design */}
-                <div className="bg-slate-950/60 rounded-xl p-4.5 border border-slate-800 text-left space-y-3 font-mono text-xs relative overflow-hidden">
+                <div className="bg-sky-50/55 rounded-xl p-4.5 border border-sky-100 text-left space-y-3 font-mono text-xs relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl pointer-events-none" />
                   
-                  <div className="flex justify-between pb-2 border-b border-white/5">
+                  <div className="flex justify-between pb-2 border-b border-sky-100">
                     <span className="text-slate-500">PROVIDER</span>
-                    <span className="text-white font-bold tracking-tight">JCASH PHILIPPINES</span>
+                    <span className="text-slate-800 font-bold tracking-tight">JCASH PHILIPPINES</span>
                   </div>
 
-                  <div className="space-y-1.5 pt-1 text-[11px]">
+                  <div className="space-y-1.5 pt-1 text-[11px] text-slate-700">
                     <div className="flex justify-between">
-                      <span className="text-slate-500">REF NUMBER</span>
-                      <span className="text-cyan-400 font-bold">{refNo || 'TXN394851890'}</span>
+                      <span className="text-slate-500 font-medium">REF NUMBER</span>
+                      <span className="text-sky-600 font-bold font-mono">{refNo || 'TXN394851890'}</span>
                     </div>
 
                     <div className="flex justify-between">
-                      <span className="text-slate-500">AMOUNT PAID</span>
-                      <span className="text-white font-bold">
+                      <span className="text-slate-500 font-medium">AMOUNT PAID</span>
+                      <span className="text-slate-800 font-bold">
                         {type === 'send' && `₱${parseFloat(sendAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}`}
                         {type === 'qrpay' && `₱${parseFloat(qrAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}`}
                         {type === 'cashin' && `₱${parseFloat(cashInAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}`}
@@ -1446,8 +1551,8 @@ export default function ActionSheets({
                     </div>
 
                     <div className="flex justify-between">
-                      <span className="text-slate-500">BENEFICIARY</span>
-                      <span className="text-white truncate">
+                      <span className="text-slate-500 font-medium">BENEFICIARY</span>
+                      <span className="text-slate-800 truncate font-semibold">
                         {type === 'send' && (sendTargetUser?.name || sendMobile)}
                         {type === 'qrpay' && qrSelectedMerchant?.name}
                         {type === 'cashin' && currentUser.name}
@@ -1457,28 +1562,28 @@ export default function ActionSheets({
                     </div>
 
                     <div className="flex justify-between">
-                      <span className="text-slate-500">DATE & TIME</span>
-                      <span className="text-slate-300">
+                      <span className="text-slate-500 font-medium">DATE & TIME</span>
+                      <span className="text-slate-500 font-mono">
                         {new Date().toLocaleString(undefined, { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
 
                     <div className="flex justify-between">
-                      <span className="text-slate-500">CURRENCY</span>
-                      <span className="text-white">PHP (₱)</span>
+                      <span className="text-slate-500 font-medium">CURRENCY</span>
+                      <span className="text-slate-800">PHP (₱)</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1.5 justify-center text-[10px] text-slate-500 font-mono">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
-                  <span>DEPOSIT CERTIFIED BY SUPABASE LEDGER</span>
+                  <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+                  <span>DEPOSIT CERTIFIED BY JCASH DIGITAL PLATFORM</span>
                 </div>
 
                 <div className="pt-2">
                   <button 
                     onClick={onClose} 
-                    className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-xs font-bold rounded-xl hover:opacity-90 transition cursor-pointer"
+                    className="w-full py-3 bg-sky-600 text-white text-xs font-bold rounded-xl hover:bg-sky-500 transition cursor-pointer"
                   >
                     Done & Close Receipt
                   </button>
